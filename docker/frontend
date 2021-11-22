@@ -1,0 +1,9 @@
+FROM node:latest
+WORKDIR /var/www/html
+RUN echo 'root:password' | chpasswd
+RUN apt-get update;
+RUN apt-get install -y sudo;
+RUN echo "node	ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER node
+RUN sudo yarn set version berry
+CMD tail -f /dev/null
