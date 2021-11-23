@@ -1,0 +1,107 @@
+<html>
+    <head>
+
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+        <style>
+
+            .title {
+                width: 100%;
+                text-align: center;
+                font-size: 2em;
+                font-weight: bold;
+                padding: 1em;
+            }
+
+            .status-table-container {
+                width: 80%;
+                margin: 0 auto;
+            }
+
+            .status-table {
+                font-size: 0.6em;
+            }
+
+            td.dot-cell {
+                padding: 0.45em;
+                margin: 0;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <div id="status-app">
+
+            <div class="title">
+                service status
+            </div>
+
+            <div class="status-table-container">
+
+                <table class="status-table table">
+
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>key</th>
+                            <th>service</th>
+                            <th>duration</th>
+                            <th>last ping</th>
+                            <th>ping due</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr v-for="service in services">
+                            <td v-if="service.status == 'good'" class="dot-cell">
+                                <svg height="17" width="17">
+                                    <circle cx="10" cy="10" r="7" fill="green" />
+                                </svg>
+                            </td>
+                            <td v-if="service.status == 'bad'" class="dot-cell">
+                                <svg height="17" width="17">
+                                    <circle cx="10" cy="10" r="7" fill="red" />
+                                </svg>
+                            </td>
+                            <th>{{service.key}}</th>
+                            <td>{{service.name}}</td>
+                            <td>{{service.duration}} seconds</td>
+                            <td>{{service.latest_call.created_at_human}}</td>
+                            <td>{{service.next_ping_due_human}}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </body>
+
+    <script>
+
+        var app = new Vue({
+            el: '#status-app',
+            data: {
+                services: []
+            },
+            methods: {},
+            mounted: function () {
+                console.log('mounted');
+
+                axios.get('http://192.168.1.150:49156/api/services').then(response => {this.services = response.data;});
+
+            }
+        });
+
+    </script>
+
+
+
+</html>

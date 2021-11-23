@@ -28,6 +28,8 @@ class CallController extends Controller
             $newCall->service_id = $service->id;
             $newCall->save();
 
+            return response()->json($newCall, 201);
+
         } else {
 
             // Attempt to find this key and log a call.
@@ -36,6 +38,8 @@ class CallController extends Controller
             $newCall = new Call;
             $newCall->service_id = $service->id;
             $newCall->save();
+
+            return response()->json($newCall, 201);
         }
     }
 }
