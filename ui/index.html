@@ -91,12 +91,14 @@
             data: {
                 services: []
             },
-            methods: {},
+            methods: {
+                getServices: function() {
+                    axios.get('http://192.168.1.150:49156/api/services').then(response => {this.services = response.data;});
+                }
+            },
             mounted: function () {
-                console.log('mounted');
-
-                axios.get('http://192.168.1.150:49156/api/services').then(response => {this.services = response.data;});
-
+                this.getServices();
+                setInterval(this.getServices, 5000);
             }
         });
 

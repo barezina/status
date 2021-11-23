@@ -26,7 +26,7 @@ class StatusController extends Controller
             $service->created_at_unix = Carbon::parse($service->created_at)->timestamp;
             $service->latestCall->created_at_unix = Carbon::parse($service->latestCall->created_at)->timestamp;
             $service->latestCall->created_at_human = Carbon::parse($service->latestCall->created_at)->diffForHumans();
-            $service->next_ping_due = $service->created_at_unix + $service->duration;
+            $service->next_ping_due = $service->latestCall->created_at_unix + $service->duration;
             $service->next_ping_due_human = Carbon::createFromTimestamp($service->next_ping_due)->diffForHumans();
 
             if ($service->next_ping_due < $now) {
