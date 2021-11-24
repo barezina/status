@@ -187,7 +187,7 @@ yellowtext;
 echo -n "- Creating frontend .env file                                ";
 
 touch ui/config.js;
-echo "var status_api_url = \"$api_url:$api_port\"" >> ui/config.js;
+echo "var status_api_url = \"$api_url:$api_port\";" >> ui/config.js;
 
 greentext;
 echo "done";
