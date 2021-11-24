@@ -195,7 +195,7 @@ echo "done";
 yellowtext;
 echo -n "- Bringing the stack up                                      ";
 
-docker-compose up --build -d;
+docker-compose up --build -d &>> install.log;
 
 greentext;
 echo "done";
@@ -203,7 +203,7 @@ echo "done";
 yellowtext;
 echo -n "- Installing composer packages                               ";
 
-docker exec status-php-api-$now_timestamp composer install;
+docker exec status-php-api-$now_timestamp composer install &>> install.log;
 
 greentext;
 echo "done";
@@ -211,7 +211,7 @@ echo "done";
 yellowtext;
 echo -n "- Setting laravel app key                                    ";
 
-docker exec status-php-api-$now_timestamp php artisan key:generate;
+docker exec status-php-api-$now_timestamp php artisan key:generate &>> install.log;
 
 greentext;
 echo "done";
@@ -219,7 +219,7 @@ echo "done";
 yellowtext;
 echo -n "- Migrating the DB                                           ";
 
-docker exec status-php-api-$now_timestamp php artisan migrate;
+docker exec status-php-api-$now_timestamp php artisan migrate &>> install.log;
 
 greentext;
 echo "";
