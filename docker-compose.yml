@@ -9,7 +9,7 @@ services:
     volumes:
     - ./api:/var/www/html
     ports:
-    - "0:80"
+    - "${api_port}:80"
     links:
     - php
   php:
@@ -29,13 +29,13 @@ services:
     volumes:
     - ./ui:/usr/share/nginx/html
     ports:
-    - "0:80"
+    - "${frontend_port}:80"
   mysql:
     env_file: .env
     container_name: status-mysql-${generation_timestamp}
     image: mysql:latest
     ports:
-    - "0:3306"
+    - "${mysql_port}:3306"
     command: --default-authentication-plugin=mysql_native_password --sql_mode=""
     environment:
       MYSQL_DATABASE: laravel
