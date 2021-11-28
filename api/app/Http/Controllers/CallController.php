@@ -11,6 +11,8 @@ class CallController extends Controller
 {
     public function notify($serviceKey, Request $request)
     {
+        return response()->json([], 200);
+        
         if ($request->has('duration') && $request->has('description')) {
 
             // Create a new service if we have all the stuff, and also log the call
