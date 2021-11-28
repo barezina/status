@@ -13,6 +13,8 @@ class StatusController extends Controller
     public function show(Request $request)
     {
 
+        return response()->json([], 200);
+        
         // Get all services
 
         $services = Service::with('latestCall')->orderBy('key', 'asc')->get();
