@@ -98,7 +98,7 @@
                     axios.get(status_api_url + '/api/services').then(response => {this.services = response.data;});
                 },
                 showProperDate: function(bigDate) {
-                    return moment(bigDate).format('lll ZZ');
+                    return moment.unix(bigDate).format('lll ZZ');
                 }
             },
             mounted: function () {
