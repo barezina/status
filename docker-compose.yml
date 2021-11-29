@@ -30,13 +30,9 @@ services:
     - ./ui:/usr/share/nginx/html
     ports:
     - "${frontend_port}:80"
-  mysql:
+  redis:
     env_file: .env
-    container_name: status-mysql-${generation_timestamp}
-    image: mysql:latest
+    container_name: status-redis-${generation_timestamp}
+    image: redis:latest
     ports:
-    - "${mysql_port}:3306"
-    command: --default-authentication-plugin=mysql_native_password --sql_mode=""
-    environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: secret
+    - "${redis_port}:6379"

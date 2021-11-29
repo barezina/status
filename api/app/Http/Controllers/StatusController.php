@@ -7,26 +7,29 @@ use App\Models\Service;
 use App\Models\Call;
 use Carbon\Carbon;
 use Log;
+use Cache;
+use Illuminate\Support\Facades\Redis;
 
 class StatusController extends Controller
 {
     public function show(Request $request)
     {
-
-        return response()->json([], 200);
-        
         // Get all services
-
-        $services = Service::with('latestCall')->orderBy('key', 'asc')->get();
+        $serviceKeys = Redis::keys('*service_*');
 
         // Calculate if they are good or bad
 
         $now = Carbon::now()->timestamp;
+        $services = [];
 
-        foreach ($services as $service) {
+        foreach ($serviceKeys as $serviceKey) {
 
-            $service->created_at_unix = Carbon::parse($service->created_at)->timestamp;
-            $service->latestCall->created_at_unix = Carbon::parse($service->latestCall->created_at)->timestamp;
+            $serviceKey = str_replace('laravel_database_', '', $serviceKey);
+            $service = unserialize(Redis::get($serviceKey));
+
+            $service->created_at_unix = $service->timestamp;
+            $service->latestCall = new Call;
+            $service->latestCall->created_at_unix = $service->timestamp;
             $service->latestCall->created_at_human = Carbon::parse($service->latestCall->created_at)->diffForHumans();
             $service->next_ping_due = $service->latestCall->created_at_unix + $service->duration;
             $service->next_ping_due_human = Carbon::createFromTimestamp($service->next_ping_due)->diffForHumans();
@@ -36,6 +39,8 @@ class StatusController extends Controller
             } else {
                 $service->status = 'good';
             }
+
+            $services[] = $service;
 
         }
 

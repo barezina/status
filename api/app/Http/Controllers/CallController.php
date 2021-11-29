@@ -6,42 +6,30 @@ use Illuminate\Http\Request;
 use Log;
 use App\Models\Service;
 use App\Models\Call;
+use Cache;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 class CallController extends Controller
 {
     public function notify($serviceKey, Request $request)
     {
-        return response()->json([], 200);
-        
         if ($request->has('duration') && $request->has('description')) {
 
-            // Create a new service if we have all the stuff, and also log the call
+            // Create a new service if we have all required parameters, and also log the call
 
             $duration = $request->duration;
             $description = $request->description;
 
-            $service = Service::where('key', $serviceKey)->firstOrNew();
+            $service = new Service;
             $service->key = $serviceKey;
             $service->duration = $duration;
             $service->name = $description;
-            $service->save();
+            $service->timestamp = Carbon::now()->timestamp;
 
-            $newCall = new Call;
-            $newCall->service_id = $service->id;
-            $newCall->save();
+            Redis::set('service_' . $serviceKey, serialize($service));
 
-            return response()->json($newCall, 201);
-
-        } else {
-
-            // Attempt to find this key and log a call.
-            $service = Service::where('key', $serviceKey)->firstOrFail();
-
-            $newCall = new Call;
-            $newCall->service_id = $service->id;
-            $newCall->save();
-
-            return response()->json($newCall, 201);
+            return response()->json($service, 201);
         }
     }
 }

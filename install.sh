@@ -133,26 +133,26 @@ done
 
 echo "";
 
-while [[ $mysql_port_good != 1 ]]
+while [[ $redis_port_good != 1 ]]
 do
     yellowtext;
-    echo -n "  Listening port for mysql:                ";
+    echo -n "  Listening port for redis:                ";
     greentext;
-    read mysql_port;
+    read redis_port;
     yellowtext;
     echo -n "  Checking that port is free:              ";
     greentext;
-    nc -vz 127.0.0.1 $mysql_port &>> /dev/null;
-    mysql_port_result=$?;
+    nc -vz 127.0.0.1 $redis_port &>> /dev/null;
+    redis_port_result=$?;
 
-    if [[ $mysql_port_result == 0 ]]; then
+    if [[ $redis_port_result == 0 ]]; then
         redtext;
-        echo "$mysql_port is occupied";
+        echo "$redis_port is occupied";
 
     else
         greentext;
         echo "✔ free";
-        mysql_port_good=1;
+        redis_port_good=1;
     fi
 
 done
@@ -170,7 +170,7 @@ echo "user_id=$userid" >> .env;
 echo "api_path=$api_url:$api_port" >> .env;
 echo "api_port=$api_port" >> .env;
 echo "frontend_port=$frontend_port" >> .env;
-echo "mysql_port=$mysql_port" >> .env;
+echo "redis_port=$redis_port" >> .env;
 
 greentext;
 echo "done";
@@ -215,11 +215,6 @@ docker exec status-php-api-$now_timestamp php artisan key:generate &>> install.l
 
 greentext;
 echo "done";
-
-yellowtext;
-echo -n "- Migrating the DB                                           ";
-
-docker exec status-php-api-$now_timestamp php artisan migrate &>> install.log;
 
 greentext;
 echo "";
